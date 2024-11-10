@@ -1,0 +1,5 @@
+# this file is important for autoconfiguration. It records lots of autoconfig class' name .
+# when springboot application started, it read spring.factories and cache it, then inject these classes into context.
+# you can define anything you need config by your own. just record them at this place.
+com.gzx.gspringboot.annotation.EnableAutoConfiguration=\
+  com.gzx.demo.config.WebServerAutoConfiguration
