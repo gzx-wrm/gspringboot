@@ -54,6 +54,7 @@ public class SpringApplication {
         // 默认该类下的所有包以及子包下的类都会被扫描到，所以Controller类就被注入进来了
 
         // 同时，这里注册clazz的时候还会扫描到EnableAutoConfiguration注解，实现自动配置的功能
+        // 目前不清楚为什么自己写的EnableAutoConfiguration注解也能自动生效 todo 了解一下详细的原理
         webContext.register(clazz);
         webContext.refresh();
         return webContext;
