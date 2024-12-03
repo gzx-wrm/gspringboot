@@ -4,6 +4,9 @@ import com.gzx.gspringboot.annotation.EnableAutoConfiguration;
 import com.gzx.gspringboot.autoconfigure.AutoConfigurationImportSelector;
 import com.gzx.gspringboot.server.TomcatServer;
 import com.gzx.gspringboot.server.WebServer;
+import com.gzx.gtomcat.Tomcat;
+import com.gzx.mvc.servlet.DispatcherServlet;
+import com.gzx.spring.context.ApplicationContext;
 import org.springframework.context.annotation.DeferredImportSelector;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.context.WebApplicationContext;
@@ -18,18 +21,29 @@ public class SpringApplication {
 
     private static AnnotationConfigWebApplicationContext webContext;
 
+    // 手动实现的spring容器
+    private static ApplicationContext applicationContext;
+
     public static void run(Class clazz) throws Exception {
         // 需要做的事情 1. 启动tomcat 2. 注册dispatcher servlet 3. 读取自动配置
         // 获取启动类的路径，这个路径是默认的spring context和spring web context的扫描路径
         String basePackagePath = clazz.getPackage().getName();
         SpringApplication.basePackagePath = basePackagePath;
 
-        AnnotationConfigWebApplicationContext webContext = initWebContext(clazz);
-        SpringApplication.webContext = webContext;
+//        AnnotationConfigWebApplicationContext webContext = initWebContext(clazz);
+//        SpringApplication.webContext = webContext;
+
+        // 启动手动实现的spring容器
+        applicationContext = new ApplicationContext(clazz);
 
         // 启动服务器
-        WebServer webServer = getWebServer(webContext);
-        webServer.start(webContext);
+//        WebServer webServer = getWebServer(webContext);
+//        webServer.start(webContext);
+
+        // 启动手动实现的tomcat
+        Tomcat tomcat = new Tomcat();
+        tomcat.addServlet("/", new DispatcherServlet(applicationContext));
+        tomcat.start();
 
 //        // 从clazz注解中获取AutoConfiguration注解，再获取ImportSelector实现类
 //        if (clazz.isAnnotationPresent(EnableAutoConfiguration.class)) {
@@ -46,6 +60,10 @@ public class SpringApplication {
 //            DeferredImportSelector importSelector = (DeferredImportSelector) importSelectorClazz.newInstance();
 //            importSelector.selectImports(null);
 //        }
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     private static AnnotationConfigWebApplicationContext initWebContext(Class clazz) {

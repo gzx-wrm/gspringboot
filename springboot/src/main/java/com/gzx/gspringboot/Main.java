@@ -2,6 +2,7 @@ package com.gzx.gspringboot;
 
 import com.gzx.gspringboot.annotation.SpringBootApplication;
 import com.gzx.gspringboot.context.SpringApplication;
+import com.gzx.spring.annotation.ComponentScan;
 
 @SpringBootApplication
 public class Main {
